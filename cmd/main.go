@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&apiserverAddress, "apiserver_address", "192.168.254.45:8080", "Kubernetes apiserver address")
+	flag.StringVar(&apiserverAddress, "apiserver_address", "", "Kubernetes apiserver address")
 	flag.IntVar(&concurrentJobHandlers, "concurrent_job_handlers", 4, "Concurrent job handlers")
 	flag.DurationVar(&resyncPeriod, "resync_period", time.Minute*30, "Resync period")
 	flag.Set("alsologtostderr", "true")
