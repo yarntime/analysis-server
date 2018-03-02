@@ -7,6 +7,6 @@ func NewMTController(c *Config) *MTController {
 	return &MTController{}
 }
 
-func (mtc *MTController) Run() {
+func (mtc *MTController) Run(stopCh chan struct{}) {
 
 }

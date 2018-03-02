@@ -6,6 +6,7 @@ import (
 	mtclient "github.com/yarntime/analysis-server/pkg/client/mtclient"
 	c "github.com/yarntime/analysis-server/pkg/controller"
 	"github.com/yarntime/analysis-server/pkg/tools"
+	"github.com/golang/glog"
 	"time"
 )
 
@@ -16,9 +17,10 @@ var (
 )
 
 func init() {
-	flag.StringVar(&apiserverAddress, "apiserver_address", "", "Kubernetes apiserver address")
+	flag.StringVar(&apiserverAddress, "apiserver_address", "192.168.254.45:8080", "Kubernetes apiserver address")
 	flag.IntVar(&concurrentJobHandlers, "concurrent_job_handlers", 4, "Concurrent job handlers")
 	flag.DurationVar(&resyncPeriod, "resync_period", time.Minute*30, "Resync period")
+	flag.Set("alsologtostderr", "true")
 	flag.Parse()
 }
 
@@ -27,7 +29,13 @@ func main() {
 
 	restConfig, err := tools.GetClientConfig(apiserverAddress)
 	if err != nil {
-		panic("Failed to create rest config.")
+		panic(err.Error())
+	}
+
+	glog.Info("register monitored target.")
+	err = mtclient.RegisterMonitoredTarget(restConfig)
+	if err != nil {
+		panic(err.Error())
 	}
 
 	config := &c.Config{
@@ -41,7 +49,8 @@ func main() {
 
 	mtc := c.NewMTController(config)
 
-	go mtc.Run()
+	glog.Info("run controller.")
+	go mtc.Run(stop)
 
 	select {}
 }

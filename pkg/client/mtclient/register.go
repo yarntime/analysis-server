@@ -46,7 +46,7 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	return nil
 }
 
-func CreateMonitoredTarget(config *rest.Config) error {
+func RegisterMonitoredTarget(config *rest.Config) error {
 	clientset, err := apiextcs.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
@@ -72,12 +72,14 @@ func CreateMonitoredTarget(config *rest.Config) error {
 		return nil
 	}
 
-	for {
+	retryCount := 5
+	for retryCount > 0 {
 		_, err = clientset.ApiextensionsV1beta1().CustomResourceDefinitions().Get(FullCRDName, meta_v1.GetOptions{})
 		if err == nil {
 			return nil
 		}
 		time.Sleep(1000)
+		retryCount--
 	}
 
 	return err
