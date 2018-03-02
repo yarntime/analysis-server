@@ -5,6 +5,7 @@ import (
 	k8sclient "github.com/yarntime/analysis-server/pkg/client/k8s_client"
 	mtclient "github.com/yarntime/analysis-server/pkg/client/mtclient"
 	c "github.com/yarntime/analysis-server/pkg/controller"
+	"github.com/yarntime/analysis-server/pkg/tools"
 	"time"
 )
 
@@ -23,13 +24,19 @@ func init() {
 
 func main() {
 	stop := make(chan struct{})
+
+	restConfig, err := tools.GetClientConfig(apiserverAddress)
+	if err != nil {
+		panic("Failed to create rest config.")
+	}
+
 	config := &c.Config{
 		Address:               apiserverAddress,
 		ConcurrentJobHandlers: concurrentJobHandlers,
 		ResyncPeriod:          resyncPeriod,
 		StopCh:                stop,
-		K8sClient:             k8sclient.NewK8sClint(apiserverAddress),
-		MTClient:              mtclient.NewMTClient(apiserverAddress),
+		K8sClient:             k8sclient.NewK8sClint(restConfig),
+		MTClient:              mtclient.NewMTClient(restConfig),
 	}
 
 	mtc := c.NewMTController(config)

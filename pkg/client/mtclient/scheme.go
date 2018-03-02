@@ -1,6 +1,5 @@
 package mtclient
 
-
 import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -13,10 +12,10 @@ var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 
 func init() {
-	v1.AddToGroupVersion(Scheme, schema.GroupVersion{Version: "v1"})
+	v1.AddToGroupVersion(Scheme, schema.GroupVersion{Version: GroupVersion})
 	AddToScheme(Scheme)
 }
 
 func AddToScheme(scheme *runtime.Scheme) {
-	localSchemeBuilder.AddToScheme(scheme)
+	LocalSchemeBuilder.AddToScheme(scheme)
 }

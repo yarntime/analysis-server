@@ -1,7 +1,6 @@
 package mtclient
 
 import (
-	"github.com/yarntime/analysis-server/pkg/tools"
 	"k8s.io/apimachinery/pkg/runtime"
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -28,13 +27,7 @@ func (c *MTClient) MonitoredTargets(namespace string) MonitoredTargetInterface {
 	return newMonitoredTargets(c, namespace)
 }
 
-func NewMTClient(address string) *MTClient {
-
-	config, err := tools.GetClientConfig(address)
-	if err != nil {
-		panic(err.Error())
-	}
-
+func NewMTClient(config *rest.Config) *MTClient {
 	clientSet, err := newForConfig(config)
 	if err != nil {
 		panic(err.Error())
@@ -68,7 +61,6 @@ func setConfigDefaults(config *rest.Config) error {
 	return nil
 }
 
-// New creates a new CoreV1Client for the given RESTClient.
 func New(c rest.Interface) *MTClient {
 	return &MTClient{c}
 }
