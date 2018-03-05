@@ -11,6 +11,8 @@ type Config struct {
 	ConcurrentJobHandlers int
 	StopCh                chan struct{}
 	ResyncPeriod          time.Duration
+	BaseImage             string
+	JobNamespace          string
 	K8sClient             *k8s.Clientset
 	MTClient              *mtclient.MTClient
 }

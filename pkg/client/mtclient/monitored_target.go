@@ -38,7 +38,7 @@ func (c *monitoredTargets) Create(monitoredTarget *types.MonitoredTarget) (resul
 	result = &types.MonitoredTarget{}
 	err = c.client.Post().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		Body(monitoredTarget).
 		Do().
 		Into(result)
@@ -49,7 +49,7 @@ func (c *monitoredTargets) Update(monitoredTarget *types.MonitoredTarget) (resul
 	result = &types.MonitoredTarget{}
 	err = c.client.Put().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		Name(monitoredTarget.Name).
 		Body(monitoredTarget).
 		Do().
@@ -61,7 +61,7 @@ func (c *monitoredTargets) UpdateStatus(monitoredTarget *types.MonitoredTarget) 
 	result = &types.MonitoredTarget{}
 	err = c.client.Put().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		Name(monitoredTarget.Name).
 		SubResource("status").
 		Body(monitoredTarget).
@@ -73,7 +73,7 @@ func (c *monitoredTargets) UpdateStatus(monitoredTarget *types.MonitoredTarget) 
 func (c *monitoredTargets) Delete(name string, options *meta_v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		Name(name).
 		Body(options).
 		Do().
@@ -83,7 +83,7 @@ func (c *monitoredTargets) Delete(name string, options *meta_v1.DeleteOptions) e
 func (c *monitoredTargets) DeleteCollection(options *meta_v1.DeleteOptions, listOptions meta_v1.ListOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		VersionedParams(&listOptions, ParameterCodec).
 		Body(options).
 		Do().
@@ -94,7 +94,7 @@ func (c *monitoredTargets) Get(name string, options meta_v1.GetOptions) (result 
 	result = &types.MonitoredTarget{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		Name(name).
 		VersionedParams(&options, ParameterCodec).
 		Do().
@@ -106,7 +106,7 @@ func (c *monitoredTargets) List(opts meta_v1.ListOptions) (result *types.Monitor
 	result = &types.MonitoredTargetList{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		VersionedParams(&opts, ParameterCodec).
 		Do().
 		Into(result)
@@ -117,7 +117,7 @@ func (c *monitoredTargets) Watch(opts meta_v1.ListOptions) (watch.Interface, err
 	opts.Watch = true
 	return c.client.Get().
 		Namespace(c.ns).
-		Resource("monitoredtargets").
+		Resource(ResourceKind).
 		VersionedParams(&opts, ParameterCodec).
 		Watch()
 }

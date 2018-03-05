@@ -1,10 +1,10 @@
 package mtclient
 
 import (
-	"testing"
 	"github.com/yarntime/analysis-server/pkg/tools"
 	apiextcs "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"testing"
 )
 
 func TestRegisterResource(t *testing.T) {

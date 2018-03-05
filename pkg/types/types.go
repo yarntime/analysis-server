@@ -13,10 +13,10 @@ type MonitoredTarget struct {
 }
 
 type TargetSpec struct {
-	ResourceType string        `json:"type"`
-	ResourceNamespace string    `json:"namespace"`
-	ResourceName    string   `json:"name"`
-	Period time.Duration `json:"period"`
+	ResourceType      string        `json:"type"`
+	ResourceNamespace string        `json:"namespace"`
+	ResourceName      string        `json:"name"`
+	Period            time.Duration `json:"period"`
 }
 
 type TargetStatus struct {

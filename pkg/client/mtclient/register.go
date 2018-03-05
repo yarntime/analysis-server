@@ -15,10 +15,10 @@ import (
 )
 
 const (
-	GroupName           = "rivernet.io"
-	ResourceKind        = "monitoredtargets"
-	GroupVersion        = "v1"
-	FullCRDName  string = ResourceKind + "." + GroupName
+	GroupName    = "rivernet.io"
+	ResourceKind = "monitoredtargets"
+	GroupVersion = "v1"
+	FullCRDName  = ResourceKind + "." + GroupName
 )
 
 var SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: GroupVersion}
@@ -78,7 +78,7 @@ func RegisterMonitoredTarget(config *rest.Config) error {
 		if err == nil {
 			return nil
 		}
-		time.Sleep(1000)
+		time.Sleep(1 * time.Second)
 		retryCount--
 	}
 

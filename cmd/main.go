@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
+	"github.com/golang/glog"
 	k8sclient "github.com/yarntime/analysis-server/pkg/client/k8s_client"
 	mtclient "github.com/yarntime/analysis-server/pkg/client/mtclient"
 	c "github.com/yarntime/analysis-server/pkg/controller"
 	"github.com/yarntime/analysis-server/pkg/tools"
-	"github.com/golang/glog"
 	"time"
 )
 
@@ -14,12 +14,16 @@ var (
 	apiserverAddress      string
 	concurrentJobHandlers int
 	resyncPeriod          time.Duration
+	baseImage             string
+	jobNamespace          string
 )
 
 func init() {
 	flag.StringVar(&apiserverAddress, "apiserver_address", "", "Kubernetes apiserver address")
 	flag.IntVar(&concurrentJobHandlers, "concurrent_job_handlers", 4, "Concurrent job handlers")
 	flag.DurationVar(&resyncPeriod, "resync_period", time.Minute*30, "Resync period")
+	flag.StringVar(&baseImage, "base_image", "registry.harbor:5000/sky-firmament/predict:latest", "Job image")
+	flag.StringVar(&jobNamespace, "job_namespace", "sky-firmament", "Job namespace")
 	flag.Set("alsologtostderr", "true")
 	flag.Parse()
 }
@@ -43,6 +47,8 @@ func main() {
 		ConcurrentJobHandlers: concurrentJobHandlers,
 		ResyncPeriod:          resyncPeriod,
 		StopCh:                stop,
+		BaseImage:             baseImage,
+		JobNamespace:          jobNamespace,
 		K8sClient:             k8sclient.NewK8sClint(restConfig),
 		MTClient:              mtclient.NewMTClient(restConfig),
 	}
