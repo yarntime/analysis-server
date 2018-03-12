@@ -13,7 +13,6 @@ import (
 
 const (
 	ContainerNamePrefix = "predict-job"
-	Threshold           = 1
 )
 
 type JobController struct {

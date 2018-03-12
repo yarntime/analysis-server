@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/golang/glog"
 	"github.com/yarntime/analysis-server/pkg/client/mtclient"
 	"github.com/yarntime/analysis-server/pkg/tools"
 	"github.com/yarntime/analysis-server/pkg/types"
+	"k8s.io/apimachinery/pkg/api/errors"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -103,5 +105,38 @@ func (mtc *MTController) processNextWorkItem() bool {
 	}
 	defer mtc.queue.Done(key)
 
+	mtc.processMonitoredTarget(key.(string))
 	return true
+}
+
+func (mtc *MTController) processMonitoredTarget(key string) error {
+	startTime := time.Now()
+	defer func() {
+		glog.V(4).Infof("Finished syncing monitored target %q (%v)", key, time.Now().Sub(startTime))
+	}()
+
+	ns, name, err := cache.SplitMetaNamespaceKey(key)
+	if err != nil {
+		return err
+	}
+	if len(ns) == 0 || len(name) == 0 {
+		return fmt.Errorf("invalid monitored target key %q: either namespace or name is missing", key)
+	}
+
+	mt, err := mtc.mtClient.MonitoredTargets(ns).Get(name, meta_v1.GetOptions{})
+	if err != nil {
+		glog.Warningf("Failed get monitored target %q (%v) from kubernetes", key, time.Now().Sub(startTime))
+		if errors.IsNotFound(err) {
+			glog.V(4).Infof("MonitoredTarget has been deleted: %v", key)
+			return nil
+		}
+		return err
+	}
+
+	if mt.Status.StartTime == nil {
+		// create cron job
+		return nil
+	}
+
+	return nil
 }
